@@ -22,13 +22,16 @@ app.use(cors())
 app.use(express.json())
 app.use(morgan("dev"))
 app.use(express.static(path.join(__dirname, "/public")));
+import userRouter from "./src/routers/userRouter.js"
 
+
+
+app.use("/api/v1/user", userRouter)
 app.use("/", (req, res, next) => {
     const error = {
         message: "You dont have promission here",
     };
     next(error);
-
 })
 
 
