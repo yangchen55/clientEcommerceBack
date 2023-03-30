@@ -8,3 +8,10 @@ export const createNewUser = (obj) => {
 export const updateUser = (filter, obj) => {
     return UserSchema.findOneAndUpdate(filter, obj, { new: true });
 };
+
+
+
+// find a user, @filter must be an obj
+export const findUser = (filter) => {
+    return UserSchema.findOne(filter);
+};
