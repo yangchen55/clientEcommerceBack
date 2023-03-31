@@ -1,11 +1,13 @@
 import express from "express"
 const router = express.Router()
 import { v4 as uuidv4 } from 'uuid';
-import { loginValidation } from "../middlewares/joiMiddleware.js";
+import { loginValidation, passResetValidation } from "../middlewares/joiMiddleware.js";
+import { createNewSession, deleteSession } from "../models/session/SessionModel.js";
 import { createNewUser, findUser, updateUser } from "../models/user/UserModel.js";
 import { comparePassword, hashPassword } from "../utils/bcrypt.js";
 import { singAccessJWT, singRefreshJWT } from "../utils/jwt.js";
-import { emailVerifiedNotification, newAccountEmailVerificationEmail, sendEmail } from "../utils/nodemailer.js";
+import { emailOtp, emailVerifiedNotification, newAccountEmailVerificationEmail, passwordUpdateNotification } from "../utils/nodemailer.js";
+import { numString } from "../utils/randomGenerator.js";
 
 // client user registration 
 router.post("/register", async (req, res, next) => {
@@ -133,5 +135,87 @@ router.post("/login", loginValidation, async (req, res, next) => {
 
 })
 
+
+// otp request
+router.post("/request-otp", async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.json({
+                status: "error",
+                message: "Invalid request",
+            });
+        }
+
+        const user = await findUser({ email });
+
+        if (user?._id) {
+            //create otp,
+            const token = numString(6)
+            const obj = {
+                token,
+                associate: email,
+            };
+            //store opt and emial in new tabale called sessions
+            const result = await createNewSession(obj);
+
+            if (result?._id) {
+                //send that otp to their email
+                const link = await emailOtp({ email, token });
+                console.log(link)
+
+                return res.json({
+                    status: "success",
+                    message:
+                        "We have sent you an OTP to your email, chek your email and fill up the form below.",
+                    link
+                });
+            }
+        }
+
+        res.json({
+            status: "error",
+            message: "Wrong email",
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+// password reset request
+router.patch("/reset-password", passResetValidation, async (req, res, next) => {
+    try {
+        const { email, opt, password } = req.body;
+
+        const deletedToke = await deleteSession({ email, opt });
+
+        if (deletedToke?._id) {
+            //encrypt password and/update user password
+            const user = await updateUser(
+                { email },
+                { password: hashPassword(password) }
+            );
+
+            if (user?._id) {
+                //send email notification
+                const link = await passwordUpdateNotification(user);
+                console.log(link)
+                return res.json({
+                    status: "success",
+                    message: "You password has been updated successfully",
+                    link
+                });
+            }
+        }
+
+        res.json({
+            status: "error",
+            message: "Unable to update your password. Invalid or expired token",
+        });
+    } catch (error) {
+        next(error);
+    }
+});
 
 export default router;

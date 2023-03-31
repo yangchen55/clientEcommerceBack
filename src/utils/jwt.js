@@ -8,7 +8,6 @@ export const singAccessJWT = async (paylodad) => {
   });
 
   //store the key
-
   await createNewSession({
     associate: paylodad.email,
     token: accessJWT,
@@ -20,7 +19,6 @@ export const singAccessJWT = async (paylodad) => {
 export const verifyAccessJWT = (tokne) => {
   try {
     const decoded = jwt.verify(tokne, process.env.JWT_ACCESS);
-
     return decoded;
   } catch (error) {
     return error.message.includes("jwt expired")
@@ -29,7 +27,7 @@ export const verifyAccessJWT = (tokne) => {
   }
 };
 
-// ===== refress
+// ===== refresh
 
 export const singRefreshJWT = async (paylodad) => {
   const refreshJWT = jwt.sign(paylodad, process.env.JWT_REFRESH, {

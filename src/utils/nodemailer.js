@@ -117,7 +117,7 @@ export const emailOtp = ({ token, email }) => {
         `,
   };
 
-  sendEmail(emailBody);
+  return sendEmail(emailBody);
 };
 
 // password update notification
@@ -147,5 +147,5 @@ export const passwordUpdateNotification = ({ fName, email }) => {
         `,
   };
 
-  sendEmail(emailBody);
+  return sendEmail(emailBody);
 };
