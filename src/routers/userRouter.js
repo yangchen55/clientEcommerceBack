@@ -1,9 +1,11 @@
 import express from "express"
 const router = express.Router()
 import { v4 as uuidv4 } from 'uuid';
+
+import { isAuth } from "../middlewares/authMiddleware.js";
 import { loginValidation, passResetValidation } from "../middlewares/joiMiddleware.js";
 import { createNewSession, deleteSession } from "../models/session/SessionModel.js";
-import { createNewUser, findUser, updateUser } from "../models/user/UserModel.js";
+import { createNewUser, findUser, updateProfile1, updateUser } from "../models/user/UserModel.js";
 import { comparePassword, hashPassword } from "../utils/bcrypt.js";
 import { singAccessJWT, singRefreshJWT } from "../utils/jwt.js";
 import { emailOtp, emailVerifiedNotification, newAccountEmailVerificationEmail, passwordUpdateNotification } from "../utils/nodemailer.js";
@@ -218,4 +220,80 @@ router.patch("/reset-password", passResetValidation, async (req, res, next) => {
     }
 });
 
+
+
+// reutrn user info
+router.get("/user-profile", isAuth, (req, res, next) => {
+    try {
+        const user = req.userInfo;
+        user.password = undefined;
+        console.log(user, "from user Router")
+
+        res.json({
+            status: "success",
+            message: "user found",
+            user,
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.put("/user-profile", async (req, res, next) => {
+    try {
+        const result = await updateProfile1(req.body);
+        if (result?._id) {
+            return res.json({
+                status: "success",
+                message: "The user has been updated!",
+                result,
+            })
+        }
+        res.json({
+            status: "error",
+            message: "Unanble to upda the profile, please try gain later",
+        });
+
+    } catch (error) {
+        next(error)
+
+    }
+
+})
+
+
+// reutrn new accessJWT
+router.get("/new-accessjwt", async (req, res, next) => {
+    try {
+        const { authorization } = req.headers;
+
+        const { email } = verifyRefreshJWT(authorization);
+
+        if (email) {
+            const user = await findUser({ email });
+
+            if (user?.refreshJWT === authorization) {
+                // create accessJWT and return
+                const accessJWT = await singAccessJWT({ email });
+
+                if (accessJWT) {
+                    return res.json({
+                        status: "success",
+                        accessJWT,
+                    });
+                }
+            }
+        }
+
+        res.status(401).json({
+            status: "error",
+            message: "unauthenticated",
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
 export default router;
+
+

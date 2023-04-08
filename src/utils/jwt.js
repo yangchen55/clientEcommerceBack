@@ -4,7 +4,7 @@ import { updateUser } from "../models/user/UserModel.js";
 
 export const singAccessJWT = async (paylodad) => {
   const accessJWT = jwt.sign(paylodad, process.env.JWT_ACCESS, {
-    expiresIn: "1m",
+    expiresIn: "30m",
   });
 
   //store the key
