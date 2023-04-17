@@ -7,7 +7,7 @@ import morgan from "morgan";
 import cors from "cors"
 import path from "path"
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8001;
 
 // database connection 
 import { dbConnect } from "./src/config/dbConfig.js"
