@@ -26,12 +26,14 @@ app.use(express.static(path.join(__dirname, "/public")));
 import userRouter from "./src/routers/userRouter.js"
 import productRotuer from "./src/routers/productRouter.js";
 import categoryRouter from "./src/routers/categoryRouter.js";
-
+import paymentRouter from "./src/routers/paymentRouter.js";
+import orderRouter from "./src/routers/orderRouter.js";
 
 app.use("/api/v1/user", userRouter)
 app.use("/api/v1/product", productRotuer);
 app.use("/api/v1/category", categoryRouter);
-
+app.use("/api/v1/payment", paymentRouter);
+app.use("/api/v1/order", orderRouter);
 
 app.use("/", (req, res, next) => {
     const error = {
