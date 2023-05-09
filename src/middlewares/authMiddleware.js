@@ -17,7 +17,7 @@ export const isAuth = async (req, res, next) => {
       const user = await findUser({
         email: decoded.email,
       });
-      console.log(user, "jwt")
+
 
       if (user?._id) {
         req.userInfo = user;
@@ -28,7 +28,7 @@ export const isAuth = async (req, res, next) => {
     // then authorize = true
 
     res.status(403).json({
-      statu: "error",
+      status: "error",
       message: decoded,
     });
   } catch (error) {
@@ -60,7 +60,7 @@ export const isValidAccessJWT = async (req, res, next) => {
     // then authorize = true
 
     res.status(403).json({
-      statu: "error",
+      status: "error",
       message: decoded,
     });
   } catch (error) {

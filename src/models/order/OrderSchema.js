@@ -9,21 +9,25 @@ const orderSchema = new mongoose.Schema({
     town: { type: String, required: true },
     state: { type: String, required: true },
     posscode: { type: String, required: true },
-    paymentMethod: { type: String, required: true },
+    userId: { type: Object, required: true },
+    paymentDetails: {
+        paymentStatus: { type: String, required: true },
+        paymentMethod: { type: String, required: true },
+        totalAmount: { type: Number, required: true }
+    },
     cart: [{
         name: { type: String, required: true },
         price: { type: Number, required: true },
         shopQty: { type: String, required: true },
         qty: { type: Number, required: true },
-        // sum: { type: Number, required: true },
+        mainImage: { type: String, required: true },
+        slug: { type: String, required: true }
+
     }]
 },
-
     {
         timestamps: true,
     }
-
-
 );
 export default mongoose.model("Order", orderSchema);
 

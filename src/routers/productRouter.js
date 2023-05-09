@@ -31,13 +31,13 @@ const upload = multer({ storage });
 router.get("/:_id?", async (req, res, next) => {
   try {
     const { _id } = req.params;
-    console.log(_id, "i reached product Router")
+
 
     const products = _id ? await getSelectedProduct({ parentCat: _id }) : await getAllProducts();
-    console.log(products, "i chekcing product router result")
+
     res.json({
       status: "success",
-      message: "product lsit",
+      message: "product list",
       products,
     });
   } catch (error) {
