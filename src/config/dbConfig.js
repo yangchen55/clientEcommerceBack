@@ -22,7 +22,7 @@ let clientPromise
 
 const options = {}
 
-const uri = 'mongodb://localhost:27017/aug_a_ecom'
+const uri = "mongodb+srv://admin:admin@cluster0.k4qvjoj.mongodb.net/ECommerceFeminal?retryWrites=true&w=majority"
 
 
 

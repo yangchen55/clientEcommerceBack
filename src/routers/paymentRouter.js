@@ -1,7 +1,6 @@
 import express from 'express'
 import clientPromise from '../config/dbConfig.js'
 
-console.log("dghh")
 const router = express.Router()
 
 let db
