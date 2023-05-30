@@ -5,7 +5,6 @@ export const dbConnect = async () => {
     try {
         mongoose.set("strictQuery", true);
         const conn = await mongoose.connect(process.env.MONGO_CLIENT)
-
         conn?.connections
             ? console.log("DB connected")
             : console.log("unable to connect mongo")
@@ -23,9 +22,6 @@ let clientPromise
 const options = {}
 
 const uri = "mongodb+srv://admin:admin@cluster0.k4qvjoj.mongodb.net/ECommerceFeminal?retryWrites=true&w=majority"
-
-
-
 if (!uri) {
     throw new Error('Please add mongo uri to .env file.')
 }
