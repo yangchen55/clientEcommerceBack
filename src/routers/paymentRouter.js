@@ -13,13 +13,11 @@ async function init() {
         client = await clientPromise
         db = await client.db()
         payments = await db.collection('payment_methods')
-
         db && console.log('Mongo db connected!')
     } catch (error) {
         throw new Error('Failed to connect to db')
     }
 }
-
 
 
 router.get('/', async (req, res, next) => {
@@ -41,7 +39,6 @@ router.get('/', async (req, res, next) => {
 
 
 router.post('/create-payment-intent', async (req, res) => {
-    console.log(" i am frpm stripe")
     const secret = process.env.SECRET_KEY
     const stripe = new Stripe(secret)
     const { amount, currency, paymentMethodType } = req.body
@@ -51,8 +48,6 @@ router.post('/create-payment-intent', async (req, res) => {
             currency,
             payment_method_types: [paymentMethodType],
         })
-
-
         res.status(200).send({
             clientSecret: paymentIntent.client_secret,
         })

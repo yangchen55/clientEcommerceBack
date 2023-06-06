@@ -19,6 +19,7 @@ const storage = multer.diskStorage({
     // validation error check
     cb(error, imgFolderPath);
   },
+
   filename: (req, file, cb) => {
     let error = null;
     const fullFileName = Date.now() + "_" + file.originalname;
@@ -27,22 +28,20 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-
 router.get("/:_id?", async (req, res, next) => {
   try {
     const { _id } = req.params;
-
-
     const products = _id ? await getSelectedProduct({ parentCat: _id }) : await getAllProducts();
-
     res.json({
       status: "success",
       message: "product list",
       products,
     });
+
   } catch (error) {
     next(error);
   }
+
 });
 
 

@@ -12,6 +12,7 @@
   "author": "yangchen",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1386.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
